@@ -1,7 +1,7 @@
 package pack1;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+/*import java.io.BufferedReader;
+import java.io.FileReader;*/
 
 public class Test
 {
@@ -10,7 +10,7 @@ public class Test
    {
 
 //                        
-// ==================================================
+// ===================================================
     /*  int[][] conn = {{0,3,0,2,0,0,0,0,4},  // 0         
                       {3,0,0,0,0,0,0,4,0},  // 1
                       {0,0,0,6,0,1,0,2,0},  // 2
@@ -23,7 +23,12 @@ public class Test
                      };*/
 	   
 	   int[][] conn = null;
-	   try
+	   
+	   csvparser parse = new csvparser();
+	   conn = parse.run();
+	   
+	   
+	   /*try
 	   {   
 		   BufferedReader buffer = new BufferedReader(new FileReader("D:\\file.txt"));   
 
@@ -51,7 +56,7 @@ public class Test
 	   {
 		   io.printStackTrace();
 	   }
-	   
+*/	   
 	   
 	   //Printing for checking
 	   //
@@ -86,8 +91,8 @@ public class Test
        }
 
        System.out.println(str);
-	   
 	   */
+	   
 	   
 
       Prims G = new Prims(conn);
