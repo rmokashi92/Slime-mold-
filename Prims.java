@@ -2,6 +2,8 @@ package pack1;
 
 import java.io.PrintWriter;
 
+//import java.util.*;
+
 public class Prims
 {
    /* ------------------------------------------
@@ -142,14 +144,14 @@ public class Prims
    {
 	   
 	   //Printing for checking
-	   /*for (int i=0; i < NNodes; i++)
+	   for (int i=0; i < NNodes; i++)
 	      {
 	         for (int j=0; j < NNodes; j++)
 	         {
 	        	 System.out.print(Outputmat[i][j]+" ");
 	         }
 	         System.out.println("");
-	      }*/
+	      }
 	   try
 	   {
 		   PrintWriter pw =new PrintWriter("D:\\output.txt");
@@ -157,7 +159,8 @@ public class Prims
 			   for(int j=0; j<NNodes; j++){
 //             System.out.print(matrix[i][j]+" ");
               
-             pw.print(Outputmat[i][j]); 
+             pw.print(Outputmat[i][j]);
+             pw.append(" ");
                                      
          }
          pw.append('\n');
