@@ -1,199 +1,199 @@
 package pack1;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
- 
+import java.io.PrintWriter;
+
+//import java.util.*;
+
 public class Prims
 {
-    private boolean unsettled[];
-    private boolean settled[];
-    private int numberofvertices;
-    private int adjacencyMatrix[][];
-    private int key[];
-    public static final int INFINITE = 999;
-    private int parent[];
- 
-    public Prims(int numberofvertices)
-    {
-        this.numberofvertices = numberofvertices;
-        unsettled = new boolean[numberofvertices + 1];
-        settled = new boolean[numberofvertices + 1];
-        adjacencyMatrix = new int[numberofvertices + 1][numberofvertices + 1];
-        key = new int[numberofvertices + 1];
-        parent = new int[numberofvertices + 1];
-    }
- 
-    public int getUnsettledCount(boolean unsettled[])
-    {
-        int count = 0;
-        for (int index = 0; index < unsettled.length; index++)
-        {
-            if (unsettled[index])
+   /* ------------------------------------------
+      Data structure used to represent a graph
+      ------------------------------------------ */
+   private static int infinite = 9999999;
+
+   int[][]  LinkCost;
+   int[][]  Outputmat;
+   int      NNodes;
+
+
+   /* -------------------------------
+      Construct a graph of N nodes
+      ------------------------------- */
+   Prims(int[][] mat)
+   {
+      int i, j;
+
+      NNodes = mat.length;
+
+      LinkCost = new int[NNodes][NNodes];
+      
+      Outputmat = new int[NNodes][NNodes];
+
+      for ( i=0; i < NNodes; i++)
+      {
+         for ( j=0; j < NNodes; j++)
+         {
+            LinkCost[i][j] = mat[i][j];
+
+            if ( LinkCost[i][j] == 0 )
+               LinkCost[i][j] = infinite;
+         }
+      }
+      
+      for ( i=0; i < NNodes; i++)
+      {
+         for ( j=0; j < NNodes; j++)
+         {
+            Outputmat[i][j] = 0;
+         }
+      }
+
+
+      for ( i=0; i < NNodes; i++)
+      {
+         for ( j=0; j < NNodes; j++)
+            if ( LinkCost[i][j] < infinite )
+               System.out.print( " " + LinkCost[i][j] + " " );
+            else
+               System.out.print(" 0 " );
+
+         System.out.println();
+      }
+   }
+
+
+   public int unReached(boolean[] r)
+   {
+      //boolean done = true;
+
+      for ( int i = 0; i < r.length; i++ )
+         if ( r[i] == false )
+            return i;
+
+      return -1;
+   }
+
+
+   public void Prim( )
+   {
+      int i, j, k, x, y;
+
+      boolean[] Reached = new boolean[NNodes];	// Reach/unreach nodes
+      int[] predNode = new int[NNodes];		// Remember min cost edge
+
+      // Start at a vertex, I picked the start node = 0
+
+      Reached[0] = true;
+
+      // Other vertices are not reached 
+
+      for ( k = 1; k < NNodes; k++ )
+      {
+         Reached[k] = false;
+      }
+
+      predNode[0] = 0;      // No edge for node 0
+
+      printReachSet( Reached );
+
+      /* =====================================================
+         UnReachSet will decreas by 1 node in each iteration
+	 There are NNodes-1 unreached nodes; so we can loop
+	 NNodes-1 times and UnReachSet will become empty !
+	 =====================================================  */
+      for (k = 1; k < NNodes; k++)
+      {
+         /* ================================================================
+	    Find min. cost link between: reached node ---> unreached node
+            ================================================================ */
+         x = y = 0;
+
+         for ( i = 0; i < NNodes; i++ )
+            for ( j = 0; j < NNodes; j++ )
             {
-                count++;
-            }
-        }
-        return count;
-    }
- 
-    public void primsAlgorithm(int adjacencyMatrix[][])
-    {
-        int evaluationVertex;
-        for (int source = 1; source <= numberofvertices; source++)
-        {
-            for (int destination = 1; destination <= numberofvertices; destination++)
-            {
-                this.adjacencyMatrix[source][destination] = adjacencyMatrix[source][destination];
-            }
-        }
- 
-        for (int index = 1; index <= numberofvertices; index++)
-        {
-            key[index] = INFINITE;
-        }
-        key[1] = 0;
-        unsettled[1] = true;
-        parent[1] = 1;
- 
-        while (getUnsettledCount(unsettled) != 0)
-        {
-            evaluationVertex = getMimumKeyVertexFromUnsettled(unsettled);
-            unsettled[evaluationVertex] = false;
-            settled[evaluationVertex] = true;
-            evaluateNeighbours(evaluationVertex);
-        }
-    } 
- 
-    private int getMimumKeyVertexFromUnsettled(boolean[] unsettled2)
-    {
-        int min = Integer.MAX_VALUE;
-        int node = 0;
-        for (int vertex = 1; vertex <= numberofvertices; vertex++)
-        {
-            if (unsettled[vertex] == true && key[vertex] < min)
-            {
-                node = vertex;
-                min = key[vertex];
-            }
-        }
-        return node;
-    }
- 
-    public void evaluateNeighbours(int evaluationVertex)
-    {
- 
-        for (int destinationvertex = 1; destinationvertex <= numberofvertices; destinationvertex++)
-        {
-            if (settled[destinationvertex] == false)
-            {
-                if (adjacencyMatrix[evaluationVertex][destinationvertex] != INFINITE)
+                if ( Reached[i] && !Reached[j] &&
+                     LinkCost[i][j] < LinkCost[x][y] )
                 {
-                    if (adjacencyMatrix[evaluationVertex][destinationvertex] < key[destinationvertex])
-                    {
-                        key[destinationvertex] = adjacencyMatrix[evaluationVertex][destinationvertex];
-                        parent[destinationvertex] = evaluationVertex;
-                    }
-                    unsettled[destinationvertex] = true;
+		   x = i;
+		   y = j;
                 }
             }
-        }
-    }
- 
-    public void printMST()
-    {
-        System.out.println("SOURCE  : DESTINATION = WEIGHT");
-        for (int vertex = 2; vertex <= numberofvertices; vertex++)
-        {
-            System.out.println(parent[vertex] + "\t:\t" + vertex +"\t=\t"+ adjacencyMatrix[parent[vertex]][vertex]);
-        }
-    }
- 
-    public static void main(String... arg) throws FileNotFoundException
-    {
-        int adjacency_matrix[][];
-        int number_of_vertices;
-        Scanner scan = new Scanner(System.in);
- 
-        try
-        {
-            System.out.println("Enter the number of vertices");
-            number_of_vertices = scan.nextInt();
-            adjacency_matrix = new int[number_of_vertices + 1][number_of_vertices + 1];
- 
-            //System.out.println("Enter the Weighted Matrix for the graph");
-            /*for (int i = 1; i <= number_of_vertices; i++)
-            {
-                for (int j = 1; j <= number_of_vertices; j++)
-                {
-                    adjacency_matrix[i][j] = scan.nextInt();
-                    if (i == j)
-                    {
-                        adjacency_matrix[i][j] = 0;
-                        continue;
-                    }
-                    if (adjacency_matrix[i][j] == 0)
-                    {
-                        adjacency_matrix[i][j] = INFINITE;
-                    }
-                }
-            }
-*/ 
-            System.out.println("Reading File from Java code");
-            //Name of the file
-            String fileName="D://file.txt";
-            try{
 
-               //Create object of FileReader
-               FileReader inputFile = new FileReader(fileName);
+         System.out.println("Min cost edge: (" + 
+				+ x + "," + 
+				+ y + ")" +
+				"cost = " + LinkCost[x][y]);
+         
+         Outputmat[x][y] = LinkCost[x][y];
+         Outputmat[y][x] = LinkCost[x][y];
 
-               //Instantiate the BufferedReader Class
-               BufferedReader bufferReader = new BufferedReader(inputFile);
+         /* =================================
+	    Add e (x,y) to Spanning tree
+            ================================= */
+         predNode[y] = x;          // Record the min cost link
 
-               //Variable to hold the one line data
-               String line;
+	 /* ==========================================
+	    ReachSet = ReachSet union {y}
+	    UnReachSet = UnReachSet - {y}
+	    ========================================== */
+         Reached[y] = true;
 
-               // Read file line by line and print on the console
-               for (int i = 1; i <= number_of_vertices; i++)
-               {
-                   for (int j = 1; j <= number_of_vertices; j++)
-                   {
-                
-               while ((line = bufferReader.readLine()) != null)   {
-                 System.out.println(line);
-               }
-               adjacency_matrix[i][j] = scan.nextInt();
-               if (i == j)
-               {
-                   adjacency_matrix[i][j] = 0;
-                   continue;
-               }
-               if (adjacency_matrix[i][j] == 0)
-               {
-                   adjacency_matrix[i][j] = INFINITE;
-               }
-           }
-       }
-               //Close the buffer reader
-               bufferReader.close();
-            }catch(Exception e){
-               System.out.println("Error while reading file line by line:" + e.getMessage());                      
-            }
-            
-            
-            Prims prims = new Prims(number_of_vertices);
-            prims.primsAlgorithm(adjacency_matrix);
-            prims.printMST();
- 
-        } catch (InputMismatchException inputMismatch)
-        {
-            System.out.println("Wrong Input Format");
-        }
-        scan.close();
-    }
+         printReachSet( Reached );     // Print state....
+         System.out.println();
+      }
+
+      printMinCostEdges( predNode );
+      printOutput();
+   }
+
+   void printMinCostEdges( int[] a )
+   {
+      for ( int i = 0; i < NNodes; i++ )
+          System.out.println( a[i] + " --> " + i );
+   }
+   
+   void printOutput()
+   {
+	   
+	   //Printing for checking
+	   for (int i=0; i < NNodes; i++)
+	      {
+	         for (int j=0; j < NNodes; j++)
+	         {
+	        	 System.out.print(Outputmat[i][j]+" ");
+	         }
+	         System.out.println("");
+	      }
+	   try
+	   {
+		   PrintWriter pw =new PrintWriter("D:\\output.txt");
+		   for(int i=0; i<NNodes; i++){
+			   for(int j=0; j<NNodes; j++){
+//             System.out.print(matrix[i][j]+" ");
+              
+             pw.print(Outputmat[i][j]); 
+                                     
+         }
+         pw.append('\n');
+     }
+     pw.flush();
+	   }
+	   catch(Exception io)
+	   {
+		  io.printStackTrace();
+	   }
+	      
+	   
+   }
+
+   void printReachSet(boolean[] Reached )
+   {
+      System.out.print("ReachSet = ");
+      for (int i = 0; i < Reached.length; i++ )
+         if ( Reached[i] )
+           System.out.print( i + " ");
+      System.out.println();
+   }
+
 }
+
