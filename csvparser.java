@@ -16,7 +16,7 @@ public class csvparser {
 
   public int[][] run() {
 
-	String csvFile = "D:\\nodes.csv";
+	String csvFile = "D:/slimemold/nodes.csv";
 	BufferedReader br = null;
 	String line = "";
 	String cvsSplitBy = ",";
