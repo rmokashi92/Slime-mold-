@@ -1,4 +1,7 @@
+//Author : Ritesh Mokashi
+
 package pack1;
+
 
 /*import java.io.BufferedReader;
 import java.io.FileReader;*/
