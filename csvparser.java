@@ -1,4 +1,4 @@
-package pack1;
+package pack2;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -16,7 +16,7 @@ public class csvparser {
 
   public int[][] run() {
 
-	String csvFile = "D:/slimemold/nodes.csv";
+	String csvFile = "D:/slimemold/nodes2.csv";
 	BufferedReader br = null;
 	String line = "";
 	String cvsSplitBy = ",";
